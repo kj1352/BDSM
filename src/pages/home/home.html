@@ -1,14 +1,20 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Ionic Blank
+      BDSM
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <h5>Latitude : {{ lat }}</h5>
+  <h5>Longitude : {{ lng }} </h5>
+  <h4 *ngIf="flag=='beh'"> <button ion-button color="danger" full> Danger </button></h4>
+  <h4 *ngIf="flag=='nobeh'" color="secondary"> <button ion-button color="secondary" full> Safe </button> </h4>
+  <!--button ion-button full color="primary" (click)="addGeofence()"> Add Geofence </button-->
 </ion-content>
