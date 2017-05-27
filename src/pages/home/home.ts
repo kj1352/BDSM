@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
+import { Vibration } from '@ionic-native/vibration';
+import { SMS } from '@ionic-native/sms';
+import { Http } from '@angular/http';
+import 'rxjs/add/operator/map';
+//import * as $ from 'jquery';
 
 
 @Component({
@@ -8,8 +13,9 @@ import { Geolocation } from '@ionic-native/geolocation';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  static_lat = 12.9069628;
-  static_lng = 77.5203785;
+  count = 0;
+  static_lat :any;
+  static_lng : any;
   lat : any;
   lng : any;
   compare_lat1 : any;
@@ -19,7 +25,8 @@ export class HomePage {
   compare_lng2: any;
   flag: any;
 
-  constructor(public navCtrl: NavController, private geolocation: Geolocation) {
+  constructor(public navCtrl: NavController, private geolocation: Geolocation, private vibration: Vibration, private sms: SMS, public http: Http) {
+    this.getdata();
     this.test();
   }
 
@@ -42,13 +49,30 @@ export class HomePage {
       this.compare_lng1 = this.static_lng - 0.002;
       this.compare_lng2 = this.static_lng + 0.002;
 
-      console.log();
       if( (this.lat <= this.compare_lat1 && this.lat >= this.compare_lat2) && (this.lng >= this.compare_lng1 && this.lat <= this.compare_lng2 ) ){
         this.flag = 'beh';
+        if(this.count != 1){
+          this.vibration.vibrate([5000,1000,5000,1000,5000]);
+            //alert("message");
+            this.sms.send('+917349104851', 'Hi!! I am in Danger... Here is My Location!! ==> ' + this.lat + ' , ' + this.lng);
+            this.count = 1;
+        }
       } else {
+        this.count = 0;
         this.flag = 'nobeh';
       }
       });
+  }
+
+  getdata() {
+    this.http.get('http://localhost:8000/posts').subscribe(res=>{
+      console.log(res);
+      var lati = JSON.parse(res['_body'])[0].static_lat;
+      this.static_lat = parseFloat(lati);
+      var longi = JSON.parse(res['_body'])[0].static_lng;
+      this.static_lng = parseFloat(longi);
+      //console.log(this.static_lat);
+  });
   }
 
 }
